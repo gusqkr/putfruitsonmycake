@@ -1,0 +1,43 @@
+# --- [Secrets & Keys] ---
+# 파이어베이스 및 환경변수 (절대 유출 금지)
+firebase-service-key.json
+*.local
+.env
+.env.*
+
+# --- [Java / Spring Boot (Gradle)] ---
+.gradle/
+build/
+bin/
+out/
+.metadata/
+architecture.html
+
+# --- [Node / React (Vite)] ---
+node_modules/
+dist/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- [IDEs / Editors] ---
+# 개인 설정 파일이 올라가면 팀원 간 설정 충돌이 일어납니다.
+.idea/
+*.iml
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+
+# --- [Operating System] ---
+# OS에서 생성하는 부수적인 파일들
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- [Log Files] ---
+*.log
+logs/
