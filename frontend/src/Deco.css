@@ -1,0 +1,102 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.app {
+  width: 390px;
+  height: 844px;
+  background: #b89583;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title-box {
+  background: rgba(255,255,255,0.2);
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 24px;
+  flex: 1;
+}
+
+.item {
+  background: rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  color: #fff;
+}
+
+.icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.item p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.bottom-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+button {
+  flex: 1;
+  height: 52px;
+  border-radius: 26px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cancel {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.submit {
+  background: #ef5350;
+  color: #fff;
+}
+
+.app.strawberry {
+  background: #fde6ef;
+}
+
+.app.shine {
+  background: #eaffc6;
+}
+
+.app.choco {
+  background: #5a3b2e;
+  color: white;
+}
+
+.item.active {
+  border: 3px solid white;
+}
