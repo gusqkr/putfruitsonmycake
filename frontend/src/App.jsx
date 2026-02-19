@@ -5,6 +5,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Home";   
 import Login from "./Login";
 import Cake from "./Cake";
+import Paper from "./Paper";
+import Deco from "./Deco";
+
 
 function App() {
   
@@ -14,6 +17,8 @@ return (
       <Route path="/" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/cake" element={<Cake />} />
+      <Route path="/Paper" element={<Paper />} />
+      <Route path="/Deco" element={<Deco />} />
     </Routes>
   
   </BrowserRouter>

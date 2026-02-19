@@ -1,0 +1,211 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.app {
+  width: 390px;      
+  height: 844px;     
+  display: flex;
+  flex-direction: column;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.header {
+  background: #cbb1a4;
+  color: #fff;
+  padding: 24px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  margin: 20px;
+  padding: 20px;
+  position: relative;
+  flex: 1;
+}
+
+.from {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.sticker {
+  font-size: 28px;
+}
+
+textarea {
+  width: 100%;
+  height: 260px;
+  border: none;
+  resize: none;
+  margin-top: 20px;
+  font-size: 22px;
+  line-height: 1.4;
+  outline: none;
+}
+
+.count {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  font-size: 12px;
+  color: #666;
+}
+
+.buttons {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+}
+
+button {
+  flex: 1;
+  height: 52px;
+  border-radius: 26px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.from-section {
+  margin-top: 16px;
+}
+
+.from-label {
+  display: block;          /* 👈 한 줄 차지 */
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.from-input {
+  width: 100%;
+  height: 40px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 18px;
+  background: transparent;
+}
+
+.divider {
+  height: 1px;
+  background-color: #ccc;
+  margin-top: 6px;
+}
+
+.app.strawberry {
+  background: #fde6ef;
+}
+
+.app.strawberry .cancel {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.app.strawberry .submit {
+  background: #cbb1a4;
+  color: #fff;
+}
+
+.app.shineMuscat {
+  background: #BFF7BB;
+}
+
+.app.shineMuscat .cancel {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.app.shineMuscat .submit {
+  background: #FF8A80;
+  color: #fff;
+}
+
+.app.Dubai {
+  background: #5E4B4B;
+}
+
+.app.Dubai .cancel {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.app.Dubai .submit {
+  background: #B5C475;
+  color: #fff;
+}
+
+.app.Dubai .card {
+  background: #B5C475;
+}
+
+.app.blueberry {
+  background: #4F5A9C;
+}
+
+.app.blueberry .cancel {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.app.blueberry .submit {
+  background: #D6D9FF;
+  color: #fff;
+}
+
+.app.chocolate {
+  background: #4D2222;
+}
+
+.app.chocolate .cancel {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.app.chocolate .submit {
+  background: #B19487;
+  color: #fff;
+}
+
+.app.cream {
+  background: #FCE9B6;
+}
+
+.app.cream .cancel {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.app.cream .submit {
+  background: #FBDB82;
+  color: #fff;
+}
+
+.app.cream .card{
+  background: #FFF2E6;
+}
