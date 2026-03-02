@@ -42,7 +42,7 @@ function Login() {
     {if (docSnap.exists()) {
       const data = docSnap.data();
       if (data.birthdate) {
-        navigate('/birth'); // 생성된 케이크 화면으로 수정하기
+        navigate('/mycake'); // 생성된 케이크 화면으로 수정하기
       } else {
     navigate('/home');
     }}});
