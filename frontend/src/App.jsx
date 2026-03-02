@@ -8,6 +8,8 @@ import Cake from "./Cake";
 import Paper from "./Paper";
 import Deco from "./Deco";
 import BirthdayCake from "./BirthdayCake";
+import Flavor from "./Flavor";
+import Birth from "./Birth";
 
 
 function App() {
@@ -21,6 +23,8 @@ return (
       <Route path="/paper" element={<Paper />} />
       <Route path="/deco" element={<Deco />} />
       <Route path="/birthdayCake" element={<BirthdayCake />} />
+      <Route path="/flavor" element={<Flavor />} />
+      <Route path="/birth" element={<Birth />} />
     </Routes>
   
   </BrowserRouter>
