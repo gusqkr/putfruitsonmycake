@@ -1,11 +1,33 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { auth } from "./Login.jsx";
 function Flavor() {
+    const user = auth.currentUser;
+        if (!user) {
+            alert("로그인이 필요합니다.");
+            return;
+        }
+        
+    const handleSubmit = async () => {
+        
+        try {
+            const response = await axios.post('http://localhost:8080/api/make-cake/flavor', {
+                uid : user.uid,
+                flavorId :cakeData[index].id});
+            if (response.data === "OK"){
+                alert(cakeData[index].flavor + "를 선택하셨습니다!");
+            }
+        } catch (error) {
+            console.error("케이크 맛 저장 실패: ", error);
+        }
+    }
+
     const cakeData = [
-        { id:1, img_path:'../public/whipped-cream-cake.png', flavor:'생크림 케이크' },
-        { id:2, img_path:'../public/chocolate-cake.png', flavor:'초코 케이크' },
-        { id:3, img_path:'../public/cheese-cake.png', flavor:'치즈 케이크' },
-        { id:4, img_path:'../public/matcha-cake.png', flavor:'말차 케이크' },
+        { id:"whipped-cream", img_path:'../public/whipped-cream-cake.png', flavor:'생크림 케이크' },
+        { id:"chocolate", img_path:'../public/chocolate-cake.png', flavor:'초코 케이크' },
+        { id:"cheese", img_path:'../public/cheese-cake.png', flavor:'치즈 케이크' },
+        { id:"matcha", img_path:'../public/matcha-cake.png', flavor:'말차 케이크' },
     ];
     const [index, setIndex] = useState(0);
 
@@ -37,7 +59,7 @@ function Flavor() {
             </div>
             <div style={{margin:'20px 30px'}}>
                 <button onClick={() => navigate(-1)} style={{width:'100px', marginRight:'10px', background:'none', border:'1px solid #ffffff'}}>이전</button>
-                <button onClick={goToBirth} style={{width:'220px', background:'#EF5B5B'}}>다음으로</button>
+                <button onClick={() => {handleSubmit(); goToBirth();}} style={{width:'220px', background:'#EF5B5B'}}>다음으로</button>
             </div>
         </div>
     );
