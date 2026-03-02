@@ -7,6 +7,7 @@ import Login from "./Login";
 import Cake from "./Cake";
 import Paper from "./Paper";
 import Deco from "./Deco";
+import BirthdayCake from "./BirthdayCake";
 
 
 function App() {
@@ -17,8 +18,9 @@ return (
       <Route path="/" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/cake" element={<Cake />} />
-      <Route path="/Paper" element={<Paper />} />
-      <Route path="/Deco" element={<Deco />} />
+      <Route path="/paper" element={<Paper />} />
+      <Route path="/deco" element={<Deco />} />
+      <Route path="/birthdayCake" element={<BirthdayCake />} />
     </Routes>
   
   </BrowserRouter>
