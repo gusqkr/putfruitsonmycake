@@ -26,6 +26,7 @@ function Mycake() {
   };
 
   const [nickname, setNickname] = useState("정보 불러오는 중...");
+  const [flavorId, setFlavorId] = useState("정보 불러오는 중...");
   useEffect(() => {
   const auth = getAuth();
   const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -37,6 +38,8 @@ function Mycake() {
         if (snapshot.exists()) {
             const nickname = snapshot.data().nickname;
             setNickname(nickname);
+            const flavorId = snapshot.data().flavorId;
+            setFlavorId(flavorId);
     }
   }).catch((error) => {
     console.error("Firestore 에러: ", error);
@@ -60,7 +63,7 @@ return () => unsubscribe();
         <h1 className="name">{nickname} 님의 생일 케이크</h1>
         <p className="count">N개의 편지가 도착했어요!</p>
       </div>
-      <img src="../public/Cake.png" />
+      <img width="70%" height="auto" src={`../public/${flavorId}-cake.png`} />
 
       <button className="nav-btn prev">◀</button>
       <button className="nav-btn next">▶</button>

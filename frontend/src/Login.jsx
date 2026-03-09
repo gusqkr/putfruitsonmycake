@@ -56,13 +56,13 @@ return (
   <div style={{padding:'50px', textAlign:'center', backgroundColor:'#FFE8D8', height:'852px', width:'393px', backgroundImage:'url(../public/login-background.png)', backgroundRepeat:'no-repeat', backgroundPosition:'center'}}>
     <h1 style={{color:'black', fontFamily:'Gluten', paddingBottom:'30px', backgroundRepeat:'no-repeat', backgroundPosition:'center'}}>Put<br />Fruits<br />on<br />My Cake</h1>
     <div style={{paddingTop:'150px', display:'flex',flexDirection:'column', alignItems:'center', height:'330px', width:'293px'}}>
-      <button style={{backgroundColor:'#fede07',color:'black', margin:'10px', padding:'15px 50px'}}>카카오톡으로 로그인하기</button>
+      <button style={{backgroundColor:'#fede07',color:'black', margin:'10px', padding:'15px 50px', fontSize:'16px'}}>카카오톡으로 로그인하기</button>
       <br />
-      <button style={{backgroundColor:'white',color:'black',margin:'10px', padding:'15px 70px'}} onClick={handleLogin}>구글로 로그인하기</button>
+      <button style={{backgroundColor:'white',color:'black',margin:'10px', padding:'15px 70px', fontSize:'16px'}} onClick={handleLogin}>구글로 로그인하기</button>
       <br />
-      <button style={{backgroundColor:'#a9a9a9',color:'black',margin:'10px', padding:'15px 50px'}}>비회원으로 로그인하기</button>
+      <button style={{backgroundColor:'#a9a9a9',color:'black',margin:'10px', padding:'15px 50px', fontSize:'16px'}}>비회원으로 로그인하기</button>
       <br />
-      <button onClick={() => {auth.signOut(); setUser(null);}} style={{backgroundColor:'#a9a9a9',color:'black',margin:'10px', padding:'15px 50px'}}>로그아웃 하기</button>
+      {/* 로그아웃 기능 필요 시 활용 -> <button onClick={() => {auth.signOut(); setUser(null);}} style={{backgroundColor:'#a9a9a9',color:'black',margin:'10px', padding:'15px 50px'}}>로그아웃 하기</button> */}
     </div>
     
   </div>
