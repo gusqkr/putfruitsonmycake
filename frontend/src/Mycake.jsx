@@ -26,6 +26,7 @@ function Mycake() {
   };
 
   const [nickname, setNickname] = useState("정보 불러오는 중...");
+  const [flavorId, setFlavorId] = useState("정보 불러오는 중...");
   useEffect(() => {
   const auth = getAuth();
   const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -37,6 +38,8 @@ function Mycake() {
         if (snapshot.exists()) {
             const nickname = snapshot.data().nickname;
             setNickname(nickname);
+            const flavorId = snapshot.data().flavorId;
+            setFlavorId(flavorId);
     }
   }).catch((error) => {
     console.error("Firestore 에러: ", error);
@@ -48,6 +51,11 @@ function Mycake() {
 });
 return () => unsubscribe(); 
 }, []);
+
+const [showPopup, setShowPopup] = useState(false);
+const togglePopup = (event) => {
+  setShowPopup(event.target.value);
+};
   
   return (
     <div 
@@ -60,7 +68,7 @@ return () => unsubscribe();
         <h1 className="name">{nickname} 님의 생일 케이크</h1>
         <p className="count">N개의 편지가 도착했어요!</p>
       </div>
-      <img src="../public/Cake.png" />
+      <img width="70%" height="auto" src={`../public/${flavorId}-cake.png`} />
 
       <button className="nav-btn prev">◀</button>
       <button className="nav-btn next">▶</button>
@@ -74,11 +82,18 @@ return () => unsubscribe();
       </div>
 
       <div className = "footer">
-      <div className="pagination">
+      <div className="pagination" style={{display: showPopup ? "none" : "revert"}}>
         {`<< ${currentPage} / ${totalPages} >>`}
       </div>
 
-      <button className="Button" onClick={goToDeco}>내 케이크 공유하기</button>
+      <button className="Button" onClick={togglePopup} value={'false'} style={{display: showPopup ? "none" : "revert"}}>내 케이크 공유하기</button>
+      { showPopup ? (
+        <div className="popup" style={{backgroundColor:'pink', width:'100%', padding:'10px', paddingBottom:'30px'}}>
+          <h2>공유하기</h2>
+          <p>공유하기 기능은 현재 준비 중입니다.</p>
+          <button onClick={togglePopup}>닫기</button>
+        </div>
+      ) : null }
       </div>
 
     </div>
