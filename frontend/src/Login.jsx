@@ -41,11 +41,14 @@ function Login() {
     getDoc(docRef).then((docSnap) =>
     {if (docSnap.exists()) {
       const data = docSnap.data();
-      if (data.birthdate) {
+      if (data.nickname && data.flavorId && data.birthdate) {
         navigate('/mycake'); // 생성된 케이크 화면으로 수정하기
       } else {
     navigate('/home');
-    }}});
+    }} else {
+    navigate('/home');}
+  
+  });
 
      } )});
     
