@@ -45,7 +45,6 @@ body {
 
 .icon {
   font-size: 70px;
-  margin-bottom: 12px;
 }
 
 .item p {
@@ -89,21 +88,19 @@ button{
   align-items: center;
   justify-content: center;
   padding: 20px;
-  border: 2px solid #eee; /* 기본 테두리 */
+  border: 2px solid #eee;
   border-radius: 15px;
   cursor: pointer;
-  transition: all 0.2s ease; /* 부드러운 전환 효과 */
+  transition: all 0.2s ease;
   background: #D9B6A7;
   color: #fff;
 }
 
-/* 마우스를 올렸을 때 (Hover) */
 .item:hover {
-  transform: translateY(-3px); /* 살짝 위로 들림 */
+  transform: translateY(-3px);
 }
 
-/* ✅ 핵심: 클릭해서 active 클래스가 붙었을 때 스타일 */
 .item.active {
-  border: 3px solid #ff4d4d; /* 강조하고 싶은 색상 */
-  box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3); /* 그림자 효과 */
+  border: 3px solid #ff4d4d;
+  box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
 }
