@@ -54,9 +54,14 @@ function Mycake() {
     return () => unsubscribe();
   }, []);
 
-  const [showPopup, setShowPopup] = useState(false);
-  const togglePopup = (event) => {
-    setShowPopup(event.target.value);
+  const handleCopyClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("클립보드에 공유 링크가 복사되었습니다!");
+    } catch (error) {
+      console.error("클립보드 복사 실패: ", error);
+      alert("공유 링크 복사에 실패했습니다.");
+    }
   };
 
   return (
@@ -84,36 +89,25 @@ function Mycake() {
       </div>
 
       <div className="footer">
-        <div
-          className="pagination"
-          style={{ display: showPopup ? "none" : "revert" }}
-        >
+        <div className="pagination">
           {`<< ${currentPage} / ${totalPages} >>`}
         </div>
 
         <button
           className="Button"
-          onClick={togglePopup}
-          value={"false"}
-          style={{ display: showPopup ? "none" : "revert" }}
+          onClick={() => {
+            const sharingId = location.state?.SharingId;
+            if (sharingId) {
+              handleCopyClipboard(
+                `http://localhost:5173/birthdayCake/${location.state.SharingId}`,
+              );
+            } else {
+              alert("공유할 케이크가 없습니다.");
+            }
+          }}
         >
           내 케이크 공유하기
         </button>
-        {showPopup ? (
-          <div
-            className="popup"
-            style={{
-              backgroundColor: "pink",
-              width: "100%",
-              padding: "10px",
-              paddingBottom: "30px",
-            }}
-          >
-            <h2>공유하기</h2>
-            <p>공유하기 기능은 현재 준비 중입니다.</p>
-            <button onClick={togglePopup}>닫기</button>
-          </div>
-        ) : null}
       </div>
     </div>
   );
