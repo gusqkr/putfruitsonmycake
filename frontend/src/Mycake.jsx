@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import backImg from "./back.png";
 import "./Mycake.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -8,6 +8,7 @@ import { db } from "./firebase.js";
 
 function Mycake() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 100;
 
@@ -22,45 +23,46 @@ function Mycake() {
   ];
 
   const goToDeco = () => {
-    navigate('/Deco');
+    navigate("/Deco");
   };
 
   const [nickname, setNickname] = useState("정보 불러오는 중...");
   const [flavorId, setFlavorId] = useState("정보 불러오는 중...");
   useEffect(() => {
-  const auth = getAuth();
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const sharingId = location.state?.SharingId;
+        const docRef = doc(db, "cakes", sharingId);
+        getDoc(docRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const nickname = snapshot.data().nickname;
+              setNickname(nickname);
+              const flavorId = snapshot.data().flavorId;
+              setFlavorId(flavorId);
+            }
+          })
+          .catch((error) => {
+            console.error("Firestore 에러: ", error);
+            setNickname("데이터를 가져오지 못했습니다..");
+          });
+      } else {
+        setNickname("로그인이 필요합니다.");
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
-  if (user){
-    const docRef = doc(db, "cakes", user.uid);
-    getDoc(docRef)
-    .then((snapshot) => {
-        if (snapshot.exists()) {
-            const nickname = snapshot.data().nickname;
-            setNickname(nickname);
-            const flavorId = snapshot.data().flavorId;
-            setFlavorId(flavorId);
-    }
-  }).catch((error) => {
-    console.error("Firestore 에러: ", error);
-    setNickname("데이터를 가져오지 못했습니다..");
-});
-} else {
-    setNickname("로그인이 필요합니다.");
-} 
-});
-return () => unsubscribe(); 
-}, []);
+  const [showPopup, setShowPopup] = useState(false);
+  const togglePopup = (event) => {
+    setShowPopup(event.target.value);
+  };
 
-const [showPopup, setShowPopup] = useState(false);
-const togglePopup = (event) => {
-  setShowPopup(event.target.value);
-};
-  
   return (
-    <div 
-      className="app" 
-      style={{ 
+    <div
+      className="app"
+      style={{
         backgroundImage: `url(${backImg})`,
       }}
     >
@@ -81,21 +83,38 @@ const togglePopup = (event) => {
         ))}
       </div>
 
-      <div className = "footer">
-      <div className="pagination" style={{display: showPopup ? "none" : "revert"}}>
-        {`<< ${currentPage} / ${totalPages} >>`}
-      </div>
-
-      <button className="Button" onClick={togglePopup} value={'false'} style={{display: showPopup ? "none" : "revert"}}>내 케이크 공유하기</button>
-      { showPopup ? (
-        <div className="popup" style={{backgroundColor:'pink', width:'100%', padding:'10px', paddingBottom:'30px'}}>
-          <h2>공유하기</h2>
-          <p>공유하기 기능은 현재 준비 중입니다.</p>
-          <button onClick={togglePopup}>닫기</button>
+      <div className="footer">
+        <div
+          className="pagination"
+          style={{ display: showPopup ? "none" : "revert" }}
+        >
+          {`<< ${currentPage} / ${totalPages} >>`}
         </div>
-      ) : null }
-      </div>
 
+        <button
+          className="Button"
+          onClick={togglePopup}
+          value={"false"}
+          style={{ display: showPopup ? "none" : "revert" }}
+        >
+          내 케이크 공유하기
+        </button>
+        {showPopup ? (
+          <div
+            className="popup"
+            style={{
+              backgroundColor: "pink",
+              width: "100%",
+              padding: "10px",
+              paddingBottom: "30px",
+            }}
+          >
+            <h2>공유하기</h2>
+            <p>공유하기 기능은 현재 준비 중입니다.</p>
+            <button onClick={togglePopup}>닫기</button>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
