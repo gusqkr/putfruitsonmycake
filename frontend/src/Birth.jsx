@@ -5,9 +5,9 @@ import { auth } from "./firebase.js";
 import { useState } from "react";
 
 function Birth() {
-    const [year, setYear] = useState('2026');
-    const [month, setMonth] = useState('1');
-    const [day, setDay] = useState('1');
+    const [year, setYear] = useState();
+    const [month, setMonth] = useState();
+    const [day, setDay] = useState();
 
     const handleSubmit = async () => {
         const user = auth.currentUser;
@@ -17,21 +17,28 @@ function Birth() {
             return;
         }
         try {
-            const birthdate = `${year}-${month}-${day}`;
-            const response = await axios.post('http://localhost:8080/api/make-cake/birth', {
-                uid : user.uid,
-                birthdate :birthdate});
+            if (year < 1900 || year > new Date().getFullYear() || month < 1 || month > 12 || day < 1 || day > 31) {
+                alert("올바른 날짜를 입력해주세요.");
+                return;     
+            }
+            else {
+                const birthdate = `${year}-${month}-${day}`;
+                const response = await axios.post('http://localhost:8080/api/make-cake/birth', {
+                    uid : user.uid, birthdate :birthdate});
             if (response.data === "OK"){
                 alert(birthdate + "로 생일이 등록되었습니다!");
+                goToMycake();
             }
+            }
+            
         } catch (error) {
             console.error("생일 등록 실패: ", error);
         }
     }
 
     const navigate = useNavigate();
-        //const goToFlavor = () => {
-           // navigate('/flavor'); }
+        const goToMycake = () => {
+            navigate('/mycake'); }
     return (
         <div style={{ backgroundColor:'#C8A799', height:'852px', width:'393px', backgroundImage:'url(../public/cake.png)', backgroundRepeat:'no-repeat', backgroundPosition:'center'}}>
             <p style={{textAlign:'center',color:'#6A4444', fontFamily:'Gluten', padding:'80px 40px 30px 30px', fontSize:'20px', fontWeight:'bold'}}>Put Fruits on My Cake</p>
@@ -41,9 +48,9 @@ function Birth() {
                 <hr style={{border:'1px solid #4A3C3C'}} />
                 <div style={{color:'#000000', marginTop:'20px', marginLeft:'10px'}}>생일을 입력해 주세요!</div>
                 <div style={{textAlign:'center', marginTop:'70px'}}>
-                    <input type="text" value={year} onChange={(e) => setYear(e.target.value)} placeholder="YYYY" required style={{background:'none', color:'#000000', border:'none', borderBottom:'1px solid #000000', outline:'none', margin:'15px 0', fontSize:'15px', paddingLeft:'10px'}} />
-                    <input type="text" value={month} onChange={(e) => setMonth(e.target.value)} placeholder="MM" required style={{background:'none', color:'#000000', border:'none', borderBottom:'1px solid #000000', outline:'none', margin:'15px 0', fontSize:'15px', paddingLeft:'10px'}} />
-                    <input type="text" value={day} onChange={(e) => setDay(e.target.value)} placeholder="DD" required style={{background:'none', color:'#000000', border:'none', borderBottom:'1px solid #000000', outline:'none', margin:'15px 25px 25px 25px ', fontSize:'15px', paddingLeft:'12px'}} />
+                    <input type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="YYYY" required style={{background:'none', color:'#000000', border:'none', borderBottom:'1px solid #000000', outline:'none', margin:'15px 0', fontSize:'15px', paddingLeft:'10px'}} />
+                    <input type="number" value={month} onChange={(e) => setMonth(e.target.value)} placeholder="MM" required style={{background:'none', color:'#000000', border:'none', borderBottom:'1px solid #000000', outline:'none', margin:'15px 0', fontSize:'15px', paddingLeft:'10px'}} />
+                    <input type="number" value={day} onChange={(e) => setDay(e.target.value)} placeholder="DD" required style={{background:'none', color:'#000000', border:'none', borderBottom:'1px solid #000000', outline:'none', margin:'15px 25px 25px 25px ', fontSize:'15px', paddingLeft:'12px'}} />
                 </div>
             </div>
             <div style={{margin:'20px 30px'}}>
