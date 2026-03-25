@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import {initializeApp} from "firebase/app";
+import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { BrowserRouter, Routes, Route } from "react-router-dom"; 
-import Home from "./Home";   
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./Home";
 import Login from "./Login";
 import Cake from "./Cake";
 import Paper from "./Paper";
@@ -12,25 +12,21 @@ import Flavor from "./Flavor";
 import Birth from "./Birth";
 import Mycake from "./Mycake";
 
-
 function App() {
-  
-return (
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/cake" element={<Cake />} />
-      <Route path="/paper" element={<Paper />} />
-      <Route path="/deco" element={<Deco />} />
-      <Route path="/birthdayCake" element={<BirthdayCake />} />
-      <Route path="/flavor" element={<Flavor />} />
-      <Route path="/birth" element={<Birth />} />
-      <Route path="/mycake" element={<Mycake />} />
-    </Routes>
-  
-  </BrowserRouter>
-  
-);
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/cake" element={<Cake />} />
+        <Route path="/paper" element={<Paper />} />
+        <Route path="/deco" element={<Deco />} />
+        <Route path="/birthdayCake/:id" element={<BirthdayCake />} />
+        <Route path="/flavor" element={<Flavor />} />
+        <Route path="/birth" element={<Birth />} />
+        <Route path="/mycake" element={<Mycake />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 export default App;
