@@ -10,6 +10,10 @@ function Birth() {
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
+  const lastDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
+    lastDays[1] = 29;
+  }
 
   const handleSubmit = async () => {
     const user = auth.currentUser;
@@ -25,7 +29,7 @@ function Birth() {
         month < 1 ||
         month > 12 ||
         day < 1 ||
-        day > 31
+        day > lastDays[month - 1]
       ) {
         alert("올바른 날짜를 입력해주세요.");
         return;
