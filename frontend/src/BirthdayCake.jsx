@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import backImg from "./images/back.png";
-import axios from "axios";
 import "./BirthdayCake.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
@@ -16,15 +15,9 @@ function BirthdayCake() {
   const [cake, setCake] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const decoItems = [
-    { id: 1, icon: "🍓" },
-    { id: 2, icon: "🍫" },
-    { id: 3, icon: "🍪" },
-    { id: 4, icon: "🟢" },
-    { id: 5, icon: "🫐" },
-    { id: 6, icon: "🍦" },
-    { id: 7, icon: "🍓" },
-  ];
+  const [letters, setLetters] = useState([]);
+  const [lastTimestamp, setLastTimestamp] = useState(null);
+  const pageSize = 7;
 
   const goToDeco = () => {
     navigate("/Deco");
@@ -44,15 +37,32 @@ function BirthdayCake() {
       });
   }, [id, navigate]);
 
+  useEffect(() => {
+    const fetchLetters = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/letters/${id}/paging`, {
+          params: { 
+            lastTimestamp: currentPage > 1 ? lastTimestamp : null, 
+           size: pageSize 
+          }
+        });
+        setLetters(response.data);
+      } catch (error) {
+        console.error("편지를 불러오는데 실패했습니다.", error);
+      }
+    };
+    fetchLetters();
+  }, [id, currentPage]);
+
   if (loading) return <div>케이크 정보를 분석 중입니다...</div>;
 
-  const currentLetters = letters.slice(
-    (currentPage - 1) * lettersPerPage,
-    currentPage * lettersPerPage
-  );
-
   const goToPrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const goToNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const goToNext = () => {
+  if (currentPage < totalPages) {
+    setCurrentPage(prev => prev + 1);
+    fetchLetters(lastTimestamp); // 다음 데이터 호출
+  }
+};
 
   return (
     <div
@@ -67,22 +77,25 @@ function BirthdayCake() {
       </div>
       <img width="70%" height="auto" src={`/${cake.flavorId}-cake.png`} />
 
-      <img src="../public/Cake.png" alt="Cake" />
+        {letters.map((letter, index) => {
+          // 서버의 ornamentId와 일치하는 아이콘 데이터 찾기
+          const iconData = decoItems.find((item) => item.id === letter.ornamentId);
+          
+          return (
+            <div
+              key={letter.id || index}
+              // index가 0이면 item-1, 1이면 item-2 클래스가 붙음
+              className={`deco-item item-${index + 1}`}
+              onClick={() => alert(`${letter.sender}님의 편지: ${letter.content}`)}
+              style={{ cursor: 'pointer' }}
+            >
+              {iconData ? iconData.icon : "💌"}
+            </div>
+          );
+        })}
 
       <button className="nav-btn prev" onClick={goToPrev}>◀</button>
       <button className="nav-btn next" onClick={goToNext}>▶</button>
-
-      <div className="cake-decoration-area">
-        {currentLetters.map((letter, index) => (
-          <div key={letter.id || index} className={`deco-item item-${index + 1}`}>
-            <span style={{fontSize: '30px'}}>
-              {letter.ornamentId === 'strawberry' ? '🍓' : 
-               letter.ornamentId === 'Dubai' ? '🍫' : '🍎'}
-            </span>
-            <div className="sender-name">{letter.sender}</div>
-          </div>
-        ))}
-      </div>
 
       <div className="footer">
         <div className="pagination">
