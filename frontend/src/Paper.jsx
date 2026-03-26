@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import './Paper.css';
 import strawberry from "./images/Strawberry.png";
 import Dubai from "./images/Dubai.png";
@@ -13,8 +14,33 @@ import { Letter } from './script.js';
 function Paper() {
   const location = useLocation();
   const navigate = useNavigate();
-  // Deco 컴포넌트에서 navigate로 보낸 theme 값을 가져옵니다.
-  const theme = location.state?.theme || "strawberry"; 
+  const theme = location.state?.theme || "strawberry";
+
+  const [sender, setSender] = useState(""); // 2. 보낸 사람 상태 추가
+  const [content, setContent] = useState("");
+  const maxLength = 850;
+
+  const handleSave = async () => {
+    if (!sender || !content) {
+      alert("닉네임과 내용을 모두 입력해주세요!");
+      return;
+    }
+
+    const letterData = {
+      sender: sender,
+      content: content,
+      ornamentId: theme
+    };
+
+    try {
+      await axios.post(`http://localhost:8080/${sender}`, letterData);
+      alert("편지가 성공적으로 저장되었습니다!");
+      navigate('/birthdayCake');
+    } catch (error) {
+      console.error("편지 저장 에러:", error);
+      alert("서버 연결에 실패했습니다.");
+    }
+  };
 
   useEffect(() => {
     Letter();
@@ -27,9 +53,6 @@ function Paper() {
   const goToBirthdayCake = () => {
     navigate('/birthdayCake');
   };
-
-  const [content, setContent] = useState("");
-  const maxLength = 850;
 
   const handleContentChange = (e) => {
     if (e.target.value.length <= maxLength) {
@@ -65,6 +88,8 @@ function Paper() {
           <textarea
             className="from-input"
             placeholder="닉네임을 입력하세요"
+            value = {sender}
+            onChange={(e) => setSender(e.target.value)}
           ></textarea>
 
           <div className="divider"></div>
@@ -83,7 +108,7 @@ function Paper() {
 
         <div className="buttons">
           <button className="cancel" onClick={goToDeco}>취소</button>
-          <button className="submit" onClick={goToBirthdayCake}>작성 완료</button>
+          <button className="submit" onClick={handleSave}>작성 완료</button>
         </div>
       </div>
 
