@@ -15,15 +15,9 @@ function BirthdayCake() {
   const [cake, setCake] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const decoItems = [
-    { id: 1, icon: "🍓" },
-    { id: 2, icon: "🍫" },
-    { id: 3, icon: "🍪" },
-    { id: 4, icon: "🟢" },
-    { id: 5, icon: "🫐" },
-    { id: 6, icon: "🍦" },
-    { id: 7, icon: "🍓" },
-  ];
+  const [letters, setLetters] = useState([]);
+  const [lastTimestamp, setLastTimestamp] = useState(null);
+  const pageSize = 7;
 
   const goToDeco = () => {
     navigate("/Deco");
@@ -43,7 +37,32 @@ function BirthdayCake() {
       });
   }, [id, navigate]);
 
+  useEffect(() => {
+    const fetchLetters = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/letters/${id}/paging`, {
+          params: { 
+            lastTimestamp: currentPage > 1 ? lastTimestamp : null, 
+           size: pageSize 
+          }
+        });
+        setLetters(response.data);
+      } catch (error) {
+        console.error("편지를 불러오는데 실패했습니다.", error);
+      }
+    };
+    fetchLetters();
+  }, [id, currentPage]);
+
   if (loading) return <div>케이크 정보를 분석 중입니다...</div>;
+
+  const goToPrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const goToNext = () => {
+  if (currentPage < totalPages) {
+    setCurrentPage(prev => prev + 1);
+    fetchLetters(lastTimestamp); // 다음 데이터 호출
+  }
+};
 
   return (
     <div
@@ -58,16 +77,25 @@ function BirthdayCake() {
       </div>
       <img width="70%" height="auto" src={`/${cake.flavorId}-cake.png`} />
 
-      <button className="nav-btn prev">◀</button>
-      <button className="nav-btn next">▶</button>
+        {letters.map((letter, index) => {
+          // 서버의 ornamentId와 일치하는 아이콘 데이터 찾기
+          const iconData = decoItems.find((item) => item.id === letter.ornamentId);
+          
+          return (
+            <div
+              key={letter.id || index}
+              // index가 0이면 item-1, 1이면 item-2 클래스가 붙음
+              className={`deco-item item-${index + 1}`}
+              onClick={() => alert(`${letter.sender}님의 편지: ${letter.content}`)}
+              style={{ cursor: 'pointer' }}
+            >
+              {iconData ? iconData.icon : "💌"}
+            </div>
+          );
+        })}
 
-      <div className="cake-decoration-area">
-        {decoItems.map((item, index) => (
-          <div key={item.id} className={`deco-item item-${index + 1}`}>
-            {item.icon}
-          </div>
-        ))}
-      </div>
+      <button className="nav-btn prev" onClick={goToPrev}>◀</button>
+      <button className="nav-btn next" onClick={goToNext}>▶</button>
 
       <div className="footer">
         <div className="pagination">
