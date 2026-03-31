@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import './Paper.css';
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import "./Paper.css";
 import strawberry from "./images/Strawberry.png";
 import Dubai from "./images/Dubai.png";
 import chocolate from "./images/Chocolate.png";
 import cream from "./images/Cream.png";
 import blueberry from "./images/Blueberry.png";
 import shineMuscat from "./images/shinemuscat.png";
-import { Letter } from './script.js';
+import { Letter } from "./script.js";
 
 function Paper() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
   const theme = location.state?.theme || "strawberry";
 
   const [sender, setSender] = useState("");
@@ -29,13 +30,13 @@ function Paper() {
     const letterData = {
       sender: sender,
       content: content,
-      ornamentId: theme
+      ornamentId: theme,
     };
 
     try {
       await axios.post(`http://localhost:8080/${sender}`, letterData);
       alert("편지가 성공적으로 저장되었습니다!");
-      navigate('/birthdayCake');
+      navigate(`/birthdayCake/${id}`);
     } catch (error) {
       console.error("편지 저장 에러:", error);
       alert("서버 연결에 실패했습니다.");
@@ -47,7 +48,7 @@ function Paper() {
   }, []);
 
   const goToDeco = () => {
-    navigate('/Deco');
+    navigate(`/Deco/${id}`);
   };
 
   const handleContentChange = (e) => {
@@ -62,34 +63,34 @@ function Paper() {
     chocolate: chocolate,
     cream: cream,
     blueberry: blueberry,
-    shineMuscat: shineMuscat
+    shineMuscat: shineMuscat,
   };
-  
 
   return (
     <div className={`app ${theme}`}>
       <div className="header">
-        <p style={{textAlign: "left", fontSize: "25px"}}>(트리 생성자 닉네임)님에게<br/>축하의 메세지를 남겨주세요!</p>
+        <p style={{ textAlign: "left", fontSize: "25px" }}>
+          (트리 생성자 닉네임)님에게
+          <br />
+          축하의 메세지를 남겨주세요!
+        </p>
       </div>
 
       <div className="sticker">
-          <img src={themeImg[theme]}/>
+        <img src={themeImg[theme]} />
       </div>
-
 
       <div className="card-background">
         <div className="card">
-          <span className="from-label">from.
-          </span>
+          <span className="from-label">from.</span>
           <textarea
             className="from-input"
             placeholder="닉네임을 입력하세요"
-            value = {sender}
+            value={sender}
             onChange={(e) => setSender(e.target.value)}
           ></textarea>
 
           <div className="divider"></div>
-
 
           <textarea
             className="letter-input"
@@ -99,12 +100,18 @@ function Paper() {
             onChange={handleContentChange}
           ></textarea>
 
-          <div className="count">{content.length} / {maxLength}</div>
+          <div className="count">
+            {content.length} / {maxLength}
+          </div>
         </div>
 
         <div className="buttons">
-          <button className="cancel" onClick={goToDeco}>취소</button>
-          <button className="submit" onClick={handleSave}>작성 완료</button>
+          <button className="cancel" onClick={goToDeco}>
+            취소
+          </button>
+          <button className="submit" onClick={handleSave}>
+            작성 완료
+          </button>
         </div>
       </div>
 
