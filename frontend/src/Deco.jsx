@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import './Deco.css';
-import { useNavigate } from "react-router-dom";
-import { Letter } from './script.js';
+import "./Deco.css";
+import { useNavigate, useParams } from "react-router-dom";
+import { Letter } from "./script.js";
 import Strawberry from "./images/Strawberry.png";
 import Dubai from "./images/Dubai.png";
 import Chocolate from "./images/Chocolate.png";
@@ -12,6 +12,7 @@ import shineMuscat from "./images/shinemuscat.png";
 function Deco() {
   const navigate = useNavigate();
   const [selectedTheme, setSelectedTheme] = useState(null);
+  const { id } = useParams();
 
   useEffect(() => {
     Letter();
@@ -22,11 +23,11 @@ function Deco() {
       alert("데코 디자인을 먼저 선택해 주세요! 🍓");
       return;
     }
-    navigate('/Paper', { state: { theme: selectedTheme } });
+    navigate(`/Paper/${id}`, { state: { theme: selectedTheme } });
   };
 
   const goToBirthdayCake = () => {
-    navigate('/birthdayCake');
+    navigate(`/birthdayCake/${id}`);
   };
 
   const themes = [
@@ -40,20 +41,17 @@ function Deco() {
 
   return (
     <div className="app">
-      <div className="title-box">
-        데코 디자인을 골라주세요
-      </div>
-    
+      <div className="title-box">데코 디자인을 골라주세요</div>
+
       <div className="grid">
         {themes.map((t) => (
-          <div 
+          <div
             key={t.id}
-            className={`item ${selectedTheme === t.id ? 'active' : ''}`}
+            className={`item ${selectedTheme === t.id ? "active" : ""}`}
             onClick={() => setSelectedTheme(t.id)}
           >
-            
             <div className="icon">
-              <img src={t.src}/>
+              <img src={t.src} />
             </div>
 
             <p>{t.name}</p>
@@ -62,7 +60,9 @@ function Deco() {
       </div>
 
       <div className="bottom-buttons">
-        <button className="cancel" onClick={goToBirthdayCake}>취소</button>
+        <button className="cancel" onClick={goToBirthdayCake}>
+          취소
+        </button>
         <button className="submit" onClick={goToPaper}>
           편지 쓰러가기
         </button>
