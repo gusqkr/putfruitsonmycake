@@ -20,7 +20,7 @@ function BirthdayCake() {
   const pageSize = 7;
 
   const goToDeco = () => {
-    navigate("/Deco");
+    navigate(`/Deco/${id}`);
   };
 
   useEffect(() => {
@@ -40,12 +40,15 @@ function BirthdayCake() {
   useEffect(() => {
     const fetchLetters = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/letters/${id}/paging`, {
-          params: { 
-            lastTimestamp: currentPage > 1 ? lastTimestamp : null, 
-           size: pageSize 
-          }
-        });
+        const response = await axios.get(
+          `http://localhost:8080/api/letters/${id}/paging`,
+          {
+            params: {
+              lastTimestamp: currentPage > 1 ? lastTimestamp : null,
+              size: pageSize,
+            },
+          },
+        );
         setLetters(response.data);
       } catch (error) {
         console.error("편지를 불러오는데 실패했습니다.", error);
@@ -58,11 +61,11 @@ function BirthdayCake() {
 
   const goToPrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const goToNext = () => {
-  if (currentPage < totalPages) {
-    setCurrentPage(prev => prev + 1);
-    fetchLetters(lastTimestamp); // 다음 데이터 호출
-  }
-};
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+      fetchLetters(lastTimestamp); // 다음 데이터 호출
+    }
+  };
 
   return (
     <div
@@ -77,25 +80,33 @@ function BirthdayCake() {
       </div>
       <img width="70%" height="auto" src={`/${cake.flavorId}-cake.png`} />
 
-        {letters.map((letter, index) => {
-          // 서버의 ornamentId와 일치하는 아이콘 데이터 찾기
-          const iconData = decoItems.find((item) => item.id === letter.ornamentId);
-          
-          return (
-            <div
-              key={letter.id || index}
-              // index가 0이면 item-1, 1이면 item-2 클래스가 붙음
-              className={`deco-item item-${index + 1}`}
-              onClick={() => alert(`${letter.sender}님의 편지: ${letter.content}`)}
-              style={{ cursor: 'pointer' }}
-            >
-              {iconData ? iconData.icon : "💌"}
-            </div>
-          );
-        })}
+      {letters.map((letter, index) => {
+        // 서버의 ornamentId와 일치하는 아이콘 데이터 찾기
+        const iconData = decoItems.find(
+          (item) => item.id === letter.ornamentId,
+        );
 
-      <button className="nav-btn prev" onClick={goToPrev}>◀</button>
-      <button className="nav-btn next" onClick={goToNext}>▶</button>
+        return (
+          <div
+            key={letter.id || index}
+            // index가 0이면 item-1, 1이면 item-2 클래스가 붙음
+            className={`deco-item item-${index + 1}`}
+            onClick={() =>
+              alert(`${letter.sender}님의 편지: ${letter.content}`)
+            }
+            style={{ cursor: "pointer" }}
+          >
+            {iconData ? iconData.icon : "💌"}
+          </div>
+        );
+      })}
+
+      <button className="nav-btn prev" onClick={goToPrev}>
+        ◀
+      </button>
+      <button className="nav-btn next" onClick={goToNext}>
+        ▶
+      </button>
 
       <div className="footer">
         <div className="pagination">
