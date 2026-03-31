@@ -32,9 +32,8 @@ function Paper() {
       ornamentId: theme
     };
 
-    const treeId = E4on40pUT9pZzKGP5UrJ;
     try {
-      await axios.post(`http://localhost:8080/${treeId}`, letterData);
+      await axios.post(`http://localhost:8080/${sender}`, letterData);
       alert("편지가 성공적으로 저장되었습니다!");
       navigate('/birthdayCake');
     } catch (error) {
