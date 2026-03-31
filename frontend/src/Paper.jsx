@@ -17,7 +17,7 @@ function Paper() {
   const { id } = useParams();
   const theme = location.state?.theme || "strawberry";
 
-  const [sender, setSender] = useState(""); // 2. 보낸 사람 상태 추가
+  const [sender, setSender] = useState("");
   const [content, setContent] = useState("");
   const maxLength = 850;
 

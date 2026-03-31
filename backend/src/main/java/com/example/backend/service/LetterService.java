@@ -16,26 +16,24 @@ import java.util.ArrayList;
 @Service
 public class LetterService {
 
-    public List<Map<String, Object>> getAllLetters(String treeId) throws Exception {
+    String treeId;
+    public List<Map<String, Object>> getAllLetters() throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         List<Map<String, Object>> letterList = new ArrayList<>();
 
-        // trees/{treeId}/letters 경로의 모든 문서를 가져옴
-        ApiFuture<QuerySnapshot> future = db.collection("trees")
-                .document(treeId)
-                .collection("letters")
+        ApiFuture<QuerySnapshot> future = db.collection("cakes")
                 .get();
 
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         for (QueryDocumentSnapshot document : documents) {
+            treeId = document.getId();
             Map<String, Object> data = document.getData();
-            data.put("id", document.getId()); // 문서의 고유 ID(UID) 추가
             letterList.add(data);
         }
         return letterList;
     }
 
-    public String saveLetter(String treeId, Letter letter) throws Exception {
+    public String saveLetter(Letter letter) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
 
         Map<String, Object> data = new HashMap<>();
