@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "./firebase.js";
 import "./Paper.css";
 import strawberry from "./images/Strawberry.png";
 import Dubai from "./images/Dubai.png";
@@ -15,6 +17,7 @@ function Paper() {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const [ownerNickname, setOwnerNickname] = useState("정보 불러오는 중...");
   const theme = location.state?.theme || "strawberry";
 
   const [sender, setSender] = useState("");
@@ -66,11 +69,24 @@ function Paper() {
     shineMuscat: shineMuscat,
   };
 
+  const docRef = doc(db, "cakes", id);
+  getDoc(docRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const ownerNickname = snapshot.data().nickname;
+        setOwnerNickname(ownerNickname);
+      }
+    })
+    .catch((error) => {
+      console.error("Firestore 에러: ", error);
+      setOwnerNickname("데이터를 가져오지 못했습니다..");
+    });
+
   return (
     <div className={`app ${theme}`}>
       <div className="header">
         <p style={{ textAlign: "left", fontSize: "25px" }}>
-          (트리 생성자 닉네임)님에게
+          {ownerNickname}님에게
           <br />
           축하의 메세지를 남겨주세요!
         </p>
