@@ -18,9 +18,9 @@ public class LetterController {
     private LetterService letterService;
 
     @PostMapping("/{treeId}")
-    public ResponseEntity<String> createLetter(@PathVariable String treeId, @RequestBody Letter letter) {
+    public ResponseEntity<String> createLetter(@RequestBody Letter letter) {
         try {
-            String letterId = letterService.saveLetter(treeId, letter);
+            String letterId = letterService.saveLetter(letter);
             return ResponseEntity.ok("편지가 성공적으로 저장되었습니다. ID: " + letterId);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("저장 실패: " + e.getMessage());

@@ -16,7 +16,7 @@ function Paper() {
   const navigate = useNavigate();
   const theme = location.state?.theme || "strawberry";
 
-  const [sender, setSender] = useState(""); // 2. 보낸 사람 상태 추가
+  const [sender, setSender] = useState("");
   const [content, setContent] = useState("");
   const maxLength = 850;
 
@@ -32,8 +32,9 @@ function Paper() {
       ornamentId: theme
     };
 
+    const treeId = E4on40pUT9pZzKGP5UrJ;
     try {
-      await axios.post(`http://localhost:8080/${sender}`, letterData);
+      await axios.post(`http://localhost:8080/${treeId}`, letterData);
       alert("편지가 성공적으로 저장되었습니다!");
       navigate('/birthdayCake');
     } catch (error) {
@@ -48,10 +49,6 @@ function Paper() {
 
   const goToDeco = () => {
     navigate('/Deco');
-  };
-
-  const goToBirthdayCake = () => {
-    navigate('/birthdayCake');
   };
 
   const handleContentChange = (e) => {
