@@ -49,7 +49,10 @@ function BirthdayCake() {
         const response = await axios.get(`http://localhost:8080/${id}`);
         if (response.data){
           setCnt(response.data.length);
-          setTotalPages(Math.ceil(response.data.length / 7));
+          if(response.data.length == 0) setTotalPages(1);
+          else{
+            setTotalPages(Math.ceil(response.data.length / 7));
+          }
         }
       }catch(error) {
         console.error("편지 개수 로딩 에러 :",error);
@@ -59,27 +62,6 @@ function BirthdayCake() {
     fetchLetterCount();
   }, []);
 
-/*
-  useEffect(() => {
-    const fetchLetters = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/${id}`,
-          {
-            params: {
-              lastTimestamp: currentPage > 1 ? lastTimestamp : null,
-              size: pageSize,
-            },
-          },
-        );
-        setLetters(response.data);
-      } catch (error) {
-        console.error("편지를 불러오는데 실패했습니다.", error);
-      }
-    };
-    fetchLetters();
-  }, [id, currentPage]);
-*/
   if (loading) return <div>케이크 정보를 분석 중입니다...</div>;
 
   const goToPrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -115,9 +97,6 @@ function BirthdayCake() {
         const iconData = decoItems.find(
           (item) => item.id === letter.ornamentId,
         );
-
-        console.log("현재 불러온 편지들:", letters);
-        console.log("사용 가능한 테마 리스트:", themes);
 
         return (
           <div
