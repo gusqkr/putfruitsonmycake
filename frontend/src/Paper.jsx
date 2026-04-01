@@ -12,6 +12,7 @@ import shineMuscat from "./images/shinemuscat.png";
 import { Letter } from "./script.js";
 
 function Paper() {
+  const [cnt, setCnt] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -21,21 +22,43 @@ function Paper() {
   const [content, setContent] = useState("");
   const maxLength = 850;
 
+  useEffect(() => {
+    const fetchLetterCount = async () => {
+      try{
+        const response = await axios.get(`http://localhost:8080/${id}`);
+        if (response.data){
+          setCnt(response.data.length);
+        }
+      }catch(error) {
+        console.error("편지 개수 로딩 에러 :",error);
+      }
+    };
+
+    fetchLetterCount();
+    Letter();
+  }, []);
+
   const handleSave = async () => {
     if (!sender || !content) {
       alert("닉네임과 내용을 모두 입력해주세요!");
       return;
     }
 
+    const nextNumber = cnt + 1;
+
     const letterData = {
       sender: sender,
       content: content,
       ornamentId: theme,
+      order: nextNumber
     };
 
     try {
-      await axios.post(`http://localhost:8080/${sender}`, letterData);
+      await axios.post(`http://localhost:8080/${id}`, letterData);
       alert("편지가 성공적으로 저장되었습니다!");
+
+      setCnt(nextNumber);
+
       navigate(`/birthdayCake/${id}`);
     } catch (error) {
       console.error("편지 저장 에러:", error);
@@ -43,9 +66,7 @@ function Paper() {
     }
   };
 
-  useEffect(() => {
-    Letter();
-  }, []);
+  
 
   const goToDeco = () => {
     navigate(`/Deco/${id}`);

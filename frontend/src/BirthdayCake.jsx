@@ -6,18 +6,24 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import axios from "axios";
 import { db } from "./firebase.js";
+import Strawberry from "./images/Strawberry.png";
+import Dubai from "./images/Dubai.png";
+import Chocolate from "./images/Chocolate.png";
+import Cream from "./images/Cream.png";
+import Blueberry from "./images/Blueberry.png";
+import shineMuscat from "./images/shinemuscat.png";
 
 function BirthdayCake() {
+  const [cnt, setCnt] = useState(0);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 100;
+  const [totalPages, setTotalPages] = useState(0);
   const { id } = useParams();
   const [cake, setCake] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [letters, setLetters] = useState([]);
   const [lastTimestamp, setLastTimestamp] = useState(null);
-  const pageSize = 7;
 
   const goToDeco = () => {
     navigate(`/Deco/${id}`);
@@ -38,10 +44,27 @@ function BirthdayCake() {
   }, [id, navigate]);
 
   useEffect(() => {
+    const fetchLetterCount = async () => {
+      try{
+        const response = await axios.get(`http://localhost:8080/${id}`);
+        if (response.data){
+          setCnt(response.data.length);
+          setTotalPages(Math.ceil(response.data.length / 7));
+        }
+      }catch(error) {
+        console.error("편지 개수 로딩 에러 :",error);
+      }
+    };
+
+    fetchLetterCount();
+  }, []);
+
+/*
+  useEffect(() => {
     const fetchLetters = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/letters/${id}/paging`,
+          `http://localhost:8080/${id}`,
           {
             params: {
               lastTimestamp: currentPage > 1 ? lastTimestamp : null,
@@ -56,16 +79,24 @@ function BirthdayCake() {
     };
     fetchLetters();
   }, [id, currentPage]);
-
+*/
   if (loading) return <div>케이크 정보를 분석 중입니다...</div>;
 
   const goToPrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const goToNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
-      fetchLetters(lastTimestamp); // 다음 데이터 호출
     }
   };
+
+  const themes = [
+      { id: "strawberry", src: Strawberry},
+      { id: "shineMuscat", src: shineMuscat},
+      { id: "Dubai", src: Dubai},
+      { id: "chocolate", src: Chocolate},
+      { id: "blueberry", src: Blueberry},
+      { id: "cream", src: Cream},
+    ];
 
   return (
     <div
@@ -81,15 +112,16 @@ function BirthdayCake() {
       <img width="70%" height="auto" src={`/${cake.flavorId}-cake.png`} />
 
       {letters.map((letter, index) => {
-        // 서버의 ornamentId와 일치하는 아이콘 데이터 찾기
         const iconData = decoItems.find(
           (item) => item.id === letter.ornamentId,
         );
 
+        console.log("현재 불러온 편지들:", letters);
+        console.log("사용 가능한 테마 리스트:", themes);
+
         return (
           <div
             key={letter.id || index}
-            // index가 0이면 item-1, 1이면 item-2 클래스가 붙음
             className={`deco-item item-${index + 1}`}
             onClick={() =>
               alert(`${letter.sender}님의 편지: ${letter.content}`)
@@ -107,6 +139,31 @@ function BirthdayCake() {
       <button className="nav-btn next" onClick={goToNext}>
         ▶
       </button>
+
+      <div className="cake-decoration-area">
+        {letters.map((letter, index) => {
+          const themeDetail = themes.find((t) => t.id === letter.ornamentId);
+          const positionIndex = (index % 7) + 1;
+
+          return (
+            <div 
+              key={letter.id || index} 
+              className={`deco-item item-${positionIndex}`}
+              style={{ cursor: "pointer" }}
+              onClick={() => alert(`${letter.sender}님의 메시지: ${letter.content}`)}
+            >
+              {themeDetail ? (
+                <img 
+                  src={themeDetail.src} 
+                  style={{ width: "100%", height: "auto" }} 
+                />
+              ) : (
+               "💌"
+              )}
+            </div>
+          );
+        })}
+      </div>
 
       <div className="footer">
         <div className="pagination">
