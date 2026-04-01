@@ -16,34 +16,40 @@ import java.util.ArrayList;
 @Service
 public class LetterService {
 
-    String treeId;
-    public List<Map<String, Object>> getAllLetters() throws Exception {
+    public List<Map<String, Object>> getAllLetters(String treeId) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
         List<Map<String, Object>> letterList = new ArrayList<>();
 
         ApiFuture<QuerySnapshot> future = db.collection("cakes")
+                .document(treeId)
+                .collection("letters")
                 .get();
 
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         for (QueryDocumentSnapshot document : documents) {
-            treeId = document.getId();
             Map<String, Object> data = document.getData();
+            data.put("id", document.getId());
             letterList.add(data);
         }
         return letterList;
     }
 
-    public String saveLetter(Letter letter) throws Exception {
+    public String saveLetter(String treeId, Letter letter) throws Exception {
         Firestore db = FirestoreClient.getFirestore();
+
+        if (treeId == null || treeId.isEmpty()) {
+            throw new IllegalArgumentException("treeId가 유효하지 않습니다.");
+        }
 
         Map<String, Object> data = new HashMap<>();
         data.put("sender", letter.getSender());
         data.put("content", letter.getContent());
         data.put("ornamentId", letter.getOrnamentId());
         data.put("timestamp", System.currentTimeMillis());
+        System.out.println("넘어온 순서: " + letter.getOrder());
+        data.put("number", letter.getOrder());
 
-        // Firestore 저장 로직
-        var result = db.collection("trees")
+        var result = db.collection("cakes")
                 .document(treeId)
                 .collection("letters")
                 .add(data);

@@ -11,16 +11,28 @@ import com.example.backend.service.LetterService;
 import com.example.backend.model.Letter;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 public class LetterController {
 
     @Autowired
     private LetterService letterService;
 
-    @PostMapping("/{treeId}")
-    public ResponseEntity<String> createLetter(@RequestBody Letter letter) {
+    @GetMapping("/{treeId}")
+    public ResponseEntity<List<Map<String, Object>>> getLetters(@PathVariable String treeId) {
         try {
-            String letterId = letterService.saveLetter(letter);
+            List<Map<String, Object>> letters = letterService.getAllLetters(treeId);
+            return ResponseEntity.ok(letters);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PostMapping("/{treeId}")
+    public ResponseEntity<String> createLetter(
+            @PathVariable String treeId,
+            @RequestBody Letter letter) {
+        try {
+            String letterId = letterService.saveLetter(treeId, letter);
             return ResponseEntity.ok("편지가 성공적으로 저장되었습니다. ID: " + letterId);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("저장 실패: " + e.getMessage());

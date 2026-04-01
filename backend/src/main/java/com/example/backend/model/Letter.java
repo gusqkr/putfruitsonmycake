@@ -7,4 +7,5 @@ public class Letter {
     private String sender;
     private String content;
     private String ornamentId;
+    private int order;
 }
