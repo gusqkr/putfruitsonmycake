@@ -26,7 +26,11 @@ public class CakeController {
             if (uid == null || uid.equals("")) {
                 return "Invalid uid";
             }
-            DocumentReference docRef = firestore.collection("cakes").document();
+            String sharingId = (String)data.get("sharingId");
+            if (sharingId == null || sharingId.isEmpty()) {
+                return "Invalid sharingId";
+            }
+            DocumentReference docRef = firestore.collection("cakes").document(sharingId);
             String generatedId = docRef.getId();
             docRef.set(data);
 
