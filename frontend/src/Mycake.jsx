@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import backImg from "./images/back.png";
 import "./Mycake.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { db } from "./firebase.js";
+import { auth } from "./Login.jsx";
 
 function Mycake() {
+  const { sharingId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,13 +28,14 @@ function Mycake() {
     navigate("/Deco");
   };
 
+  const isGuest = auth.currentUser?.isAnonymous;
+
   const [nickname, setNickname] = useState("정보 불러오는 중...");
   const [flavorId, setFlavorId] = useState("정보 불러오는 중...");
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const sharingId = location.state?.SharingId;
         const docRef = doc(db, "cakes", sharingId);
         getDoc(docRef)
           .then((snapshot) => {
@@ -54,7 +57,7 @@ function Mycake() {
     return () => unsubscribe();
   }, []);
 
-  const handleCopyClipboard = async (text) => {
+  const handleShareCopyClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
       alert("클립보드에 공유 링크가 복사되었습니다!");
@@ -64,11 +67,24 @@ function Mycake() {
     }
   };
 
+  const handleMyCakeCopyClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert(
+        "클립보드에 내 케이크 링크가 복사되었습니다! 해당 링크가 있어야 다시 이 페이지에 진입하실 수 있습니다.",
+      );
+    } catch (error) {
+      console.error("클립보드 복사 실패: ", error);
+      alert("내 케이크 링크 복사에 실패했습니다.");
+    }
+  };
+
   return (
     <div
       className="app"
       style={{
         backgroundImage: `url(${backImg})`,
+        position: "relative",
       }}
     >
       <div className="header">
@@ -93,13 +109,37 @@ function Mycake() {
           {`<< ${currentPage} / ${totalPages} >>`}
         </div>
 
+        {isGuest && (
+          <button
+            style={{
+              position: "absolute",
+              bottom: "200px",
+              right: "10%",
+              fontSize: "16px",
+              padding: "10px 15px",
+              borderRadius: "50px",
+              background: "none",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+              border: "1px solid #ccc",
+              zIndex: 2000, // 다른 요소보다 위에 오도록
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              handleMyCakeCopyClipboard(
+                `http://localhost:5173/MyCake/${sharingId}`,
+              );
+            }}
+          >
+            내 케이크
+          </button>
+        )}
+
         <button
           className="Button"
           onClick={() => {
-            const sharingId = location.state?.SharingId;
             if (sharingId) {
-              handleCopyClipboard(
-                `http://localhost:5173/birthdayCake/${location.state.SharingId}`,
+              handleShareCopyClipboard(
+                `http://localhost:5173/birthdayCake/${sharingId}`,
               );
             } else {
               alert("공유할 케이크가 없습니다.");

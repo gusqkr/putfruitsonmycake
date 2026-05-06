@@ -1,10 +1,11 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { auth } from "./firebase.js";
 import { useState } from "react";
 
 function Birth() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [year, setYear] = useState("");
@@ -35,6 +36,8 @@ function Birth() {
         return;
       } else {
         const prevData = location.state;
+        const sharingId = id;
+        const authType = prevData.authType;
         const nickname = prevData.nickname;
         const flavorId = prevData.flavorId;
 
@@ -46,12 +49,14 @@ function Birth() {
             nickname: nickname,
             flavorId: flavorId,
             birthdate: birthdate,
+            sharingId: sharingId,
+            authType: authType,
           },
         );
         const generatedId = response.data;
         console.log("생성된 케이크 ID: ", generatedId);
         alert("케이크가 생성되었습니다!");
-        navigate("/mycake", { state: { SharingId: generatedId } });
+        navigate(`/mycake/${generatedId}`);
       }
     } catch (error) {
       console.error("생일 등록 실패: ", error);

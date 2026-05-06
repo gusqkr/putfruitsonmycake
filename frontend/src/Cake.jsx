@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "./Login.jsx";
 
 function Cake() {
+  const { id } = useParams();
+  console.log("Cake 컴포넌트에서 id: ", id);
+  const location = useLocation();
+  const { authType } = location.state || { authType: "guest" };
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
 
@@ -16,7 +20,9 @@ function Cake() {
       return;
     }
     try {
-      navigate("/flavor", { state: { nickname: nickname } });
+      navigate(`/flavor/${id}`, {
+        state: { nickname: nickname, authType: authType },
+      });
     } catch (error) {
       console.error("제빵사 이름 전송 실패: ", error);
     }

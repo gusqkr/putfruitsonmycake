@@ -1,22 +1,15 @@
+import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInAnonymously,
   setPersistence,
-  browserSessionPersistence,
+  browserLocalPersistence,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import {
-  doc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-  limit,
-} from "firebase/firestore";
 import { db } from "./firebase.js";
 const firebaseConfig = {
   apiKey: "AIzaSyAEkF0N2V0ddUYUscaAPKVIxIqNeMchwV4",
@@ -35,43 +28,71 @@ googleProvider.setCustomParameters({
   prompt: "select_account",
 });
 
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  limit,
+} from "firebase/firestore";
+
 function Login() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
 
-  const handleLogin = () => {
-    setPersistence(auth, browserSessionPersistence)
-      .then(() => {
-        return signInWithPopup(auth, googleProvider).then((result) => {
-          setUser(result.user);
-          return result.user.getIdToken().then((token) => {
-            alert(token);
-            fetch("http://localhost:8080/api/hello", {
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            })
-              .then((res) => res.text())
-              .then((data) => alert(data));
-            console.log("로그인 성공!");
-            const uid = result.user.uid;
-            checkMyCake(uid);
-          });
+  const handleLogin = async (loginType) => {
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+
+      let userCredential;
+      let userData = {};
+
+      if (loginType === "google") {
+        userCredential = await signInWithPopup(auth, googleProvider);
+        const user = userCredential.user;
+        const token = await user.getIdToken();
+
+        userData = {
+          uid: user.uid,
+          email: user.email,
+          name: user.displayName,
+          authType: "google",
+        };
+        await fetch("http://localhost:8080/api/hello", {
+          headers: { Authorization: "Bearer " + token },
         });
-      })
-      .catch((error) => {
-        console.error("로그인 실패: ", error);
+      } else {
+        userCredential = await signInAnonymously(auth);
+        const user = userCredential.user;
+
+        userData = {
+          uid: user.uid,
+          authType: "guest",
+        };
+      }
+      await setDoc(doc(db, "users", userCredential.user.uid), userData, {
+        merge: true,
       });
+
+      console.log(`${loginType} 유저 정보 저장 완료`);
+      checkMyCake(userCredential.user.uid, loginType);
+    } catch (error) {
+      console.error("로그인 중 오류:", error);
+    }
   };
 
-  const checkMyCake = async (uid) => {
+  const checkMyCake = async (uid, loginType) => {
     const q = query(collection(db, "cakes"), where("uid", "==", uid), limit(1));
     const querySnapshot = await getDocs(q);
+
     if (!querySnapshot.empty) {
       const myCakeId = querySnapshot.docs[0].id;
-      navigate("/mycake", { state: { SharingId: myCakeId } });
+      navigate(`/mycake/${myCakeId}`, { state: { authType: loginType } });
     } else {
-      navigate("/cake");
+      const newCakeId = uuidv4();
+      navigate(`/cake/${newCakeId}`, { state: { authType: loginType } });
     }
   };
   return (
@@ -134,7 +155,7 @@ function Login() {
             padding: "15px 70px",
             fontSize: "16px",
           }}
-          onClick={handleLogin}
+          onClick={() => handleLogin("google")}
         >
           구글로 로그인하기
         </button>
@@ -147,6 +168,7 @@ function Login() {
             padding: "15px 50px",
             fontSize: "16px",
           }}
+          onClick={() => handleLogin("guest")}
         >
           비회원으로 로그인하기
         </button>

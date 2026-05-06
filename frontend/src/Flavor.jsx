@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { auth } from "./Login.jsx";
 function Flavor() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const user = auth.currentUser;
@@ -18,7 +19,7 @@ function Flavor() {
         ...step1Data,
         flavorId: cakeData[index].id,
       };
-      navigate("/birth", { state: updatedData });
+      navigate(`/birth/${id}`, { state: updatedData });
     } catch (error) {
       console.error("케이크 맛 전송 실패: ", error);
     }
